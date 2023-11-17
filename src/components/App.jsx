@@ -40,13 +40,19 @@ const App = () => {
       </header>
       <p className="date">10/20/2021</p>
       <article className="today">
-        <WeatherCode code={"2"} />
+      {apimeteo ? (
+            <>
+              <WeatherCode code={apimeteo.WeatherCode} />
+              <TemperatureDisplay
+                tempmin={apimeteo.temperature_2m_min}
+                tempmax={apimeteo.temperature_2m_max}
+                tempmoy={apimeteo.temperature_2m_mean}
+              />
+            </>
+          ) : (
+            <p>Pas de données.</p>
+          )}
         
-        <TemperatureDisplay
-        tempmin={20}
-        tempmax={25}
-        tempmoy={10}
-        />
         
       </article>
       <section className="hidden">
