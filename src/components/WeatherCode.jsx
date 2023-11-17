@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import sunshine from '../assets/img/sunshine.png';
 import partielSun from '../assets/img/partial-sun.png';
 import clouds from '../assets/img/clouds.png';
@@ -51,10 +53,11 @@ import thunderstorm from '../assets/img/thunderstorm.png';
 
 
 
-const WeatherImg = (props) => {
+const WeatherCode = (props) => {
     const { 
         code
     } = props
+    
     
     var findImg = code => codesimage
     .find(i => code >= i.code)
@@ -65,4 +68,8 @@ const WeatherImg = (props) => {
     alt="sunshine" 
     className="weathercode-img" />
 }
-export default WeatherImg
+
+WeatherCode.prototype = {
+    code: PropTypes.number.isRequired
+}
+export default WeatherCode
