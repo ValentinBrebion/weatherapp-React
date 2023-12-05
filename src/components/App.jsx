@@ -8,7 +8,6 @@ import WeatherCode from '../../src/components/WeatherCode';
 const App = () => {
   const [apimeteo, setApiMeteo] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null);
-  const [present, setPresent] = useState(false)
 
   const FetchAPImeteo = () => {
     const latitude = 46.1592
@@ -42,7 +41,6 @@ const App = () => {
         <button 
         className="refresh-button" 
         onClick={FetchAPImeteo}
-        onChange={setPresent(!present)}
         >
           <img src="https://lpmiaw-react.napkid.dev/img/weather/refresh.png" alt="Refresh" />
         </button>
