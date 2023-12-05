@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import TemperatureDisplay from '../../src/components/TemperatureDisplay';
 import WeatherCode from '../../src/components/WeatherCode';
+import ForecastItem from '../../src/components/ForecastItem';
 
 
 
@@ -8,6 +9,7 @@ import WeatherCode from '../../src/components/WeatherCode';
 const App = () => {
   const [apimeteo, setApiMeteo] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [tabActive, setLastActive] = useState(null)
 
   const FetchAPImeteo = () => {
     const latitude = 46.1592
@@ -31,9 +33,8 @@ const App = () => {
     .then(res => res.json())
     .then(data => {
       setApiMeteo(data);
-      console.log(data)
-      
       // Mettez à jour le timestamp de la dernière mise à jour
+      console.log(data)
      setLastUpdate(Date.now());
     });
 
@@ -46,8 +47,6 @@ const App = () => {
       clearInterval(timer)
     }
   }, [])
-  
-  const reducer = (accumulator, curr) => accumulator + curr;
   
   return <main className="weather-container">
     <div className="weather-container-content">
@@ -69,7 +68,7 @@ const App = () => {
               <TemperatureDisplay
                 tempmin={apimeteo.daily.temperature_2m_min[0]}
                 tempmax={apimeteo.daily.temperature_2m_max[0]}
-                tempmoy={Math.round(apimeteo.daily.temperature_2m_max.reduce(reducer)/apimeteo.daily.temperature_2m_max.length)}
+                tempmoy={Math.round(apimeteo.daily.temperature_2m_min[0]+apimeteo.daily.temperature_2m_max[0]/2)}
               />
             </>
           ) : (
@@ -78,52 +77,37 @@ const App = () => {
         
         
       </article>
-      <section className="hidden">
+      <section>
         <nav className="tabs">
-          <button className="tab tab--active">
+          <button onClick={() => setLastActive('day')} className={tabActive === 'day' ? 'tab tab--active' : 'tab'}>
             Journée
           </button>
-          <button className="tab">
+          <button onClick={() => setLastActive('week')} className={tabActive === 'week' ? 'tab tab--active' : 'tab'}>
             Semaine
           </button>
         </nav>
         <ul className="forecast">
-          <li className="forecast-item">
-            <p>
-              20/10
-            </p>
-            <img src="https://lpmiaw-react.napkid.dev/img/weather/sunshine.png" alt="sunshine" className="weathercode-img" />
-            <p className="forecast-item-temp">
-              21
-            </p>
-          </li>
-          <li className="forecast-item">
-            <p>
-              21/10
-            </p>
-            <img src="https://lpmiaw-react.napkid.dev/img/weather/sunshine.png" alt="sunshine" className="weathercode-img" />
-            <p className="forecast-item-temp">
-              21
-            </p>
-          </li>
-          <li className="forecast-item">
-            <p>
-              22/10
-            </p>
-            <img src="https://lpmiaw-react.napkid.dev/img/weather/sunshine.png" alt="sunshine" className="weathercode-img" />
-            <p className="forecast-item-temp">
-              21
-            </p>
-          </li>
-          <li className="forecast-item">
-            <p>
-              23/10
-            </p>
-            <img src="https://lpmiaw-react.napkid.dev/img/weather/sunshine.png" alt="sunshine" className="weathercode-img" />
-            <p className="forecast-item-temp">
-              21
-            </p>
-          </li>
+        {apimeteo ? (
+          <>
+           {tabActive === 'day' && Array(5).fill(null).map((key, idx) =><ForecastItem
+           key={idx}
+          date={`${6+(idx*4)}h`}
+          imgSrc={apimeteo.hourly.weathercode[6+(idx*4)]}
+          ForeTemp={Math.round(apimeteo.hourly.temperature_2m[6+(idx*4)])
+          }
+          />)}
+
+          {tabActive === 'week' && Array(5).fill(null).map((key, idx) =><ForecastItem
+           key={idx}
+          date={apimeteo.daily.time[idx+1].substring(5,10).replace("-"," / ")}
+          imgSrc={apimeteo.daily.weathercode[idx+1]}
+          ForeTemp={Math.round(apimeteo.daily.temperature_2m_max[idx+1]+ apimeteo.daily.temperature_2m_min[idx+1]/2).toFixed(1)}
+          />)}
+          </>
+          ) : (
+            <p>Pas de données.</p>
+          )}
+          
         </ul>
       </section>
       <footer className="weather-container-footer">
