@@ -13,12 +13,26 @@ const App = () => {
     const latitude = 46.1592
     const longitude = -1.171
     const timezone = 'Europe/London'
-  
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&timezone=${timezone}`)
+ 
+    const dailyVars = [
+      'weathercode',
+      'temperature_2m_max',
+      'temperature_2m_min'
+    ]
+    
+    const hourlyVars = [
+      'temperature_2m',
+      'weathercode'
+    ]
+   
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(',')}&daily=${dailyVars.join(',')}&timezone=${timezone}`)
     .then(res => res.json())
     .then(data => {
       setApiMeteo(data);
+      console.log(data)
+      
       // Mettez à jour le timestamp de la dernière mise à jour
      setLastUpdate(Date.now());
     });
@@ -33,6 +47,7 @@ const App = () => {
     }
   }, [])
   
+  const reducer = (accumulator, curr) => accumulator + curr;
   
   return <main className="weather-container">
     <div className="weather-container-content">
@@ -47,13 +62,14 @@ const App = () => {
       </header>
       <p className="date">10/20/2021</p>
       <article className="today">
+        
       {apimeteo ? (
             <>
-              <WeatherCode code={apimeteo.WeatherCode} />
+              <WeatherCode code={apimeteo.daily.weathercode[0]} />
               <TemperatureDisplay
-                tempmin={apimeteo.temperature_2m_min}
-                tempmax={apimeteo.temperature_2m_max}
-                tempmoy={apimeteo.temperature_2m_mean}
+                tempmin={apimeteo.daily.temperature_2m_min[0]}
+                tempmax={apimeteo.daily.temperature_2m_max[0]}
+                tempmoy={Math.round(apimeteo.daily.temperature_2m_max.reduce(reducer)/apimeteo.daily.temperature_2m_max.length)}
               />
             </>
           ) : (
