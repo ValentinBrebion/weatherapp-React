@@ -8,6 +8,7 @@ import WeatherCode from '../../src/components/WeatherCode';
 const App = () => {
   const [apimeteo, setApiMeteo] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [present, setPresent] = useState(false)
 
   const FetchAPImeteo = () => {
     const latitude = 46.1592
@@ -24,17 +25,25 @@ const App = () => {
     });
 
   }
+
   useEffect(() => {
-    // Mettez à jour la date lors du premier rendu
-    FetchAPImeteo();
-  }, []);
+    FetchAPImeteo()
+    const timer = setInterval(FetchAPImeteo, 10000)
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
   
   
   return <main className="weather-container">
     <div className="weather-container-content">
       <header className="weather-container-header">
         <p className="location">La Rochelle</p>
-        <button className="refresh-button" onClick={FetchAPImeteo}>
+        <button 
+        className="refresh-button" 
+        onClick={FetchAPImeteo}
+        onChange={setPresent(!present)}
+        >
           <img src="https://lpmiaw-react.napkid.dev/img/weather/refresh.png" alt="Refresh" />
         </button>
       </header>
