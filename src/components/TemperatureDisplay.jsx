@@ -1,19 +1,18 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-const Température = (props) => {
-    const {
-        tempmin,
-        tempmax,
-        tempmoy
-    } = props
+class TemperatureDisplay extends Component {
+
+  render(){
     return <div className="temperature-display">
-    <p className="temperature-display-avg">{tempmoy}</p>
+    <p className="temperature-display-avg">{this.props.tempmoy}</p>
     <div className="temperature-display-row">
-      <p>{tempmax}</p>
+      <p>{this.props.tempmax}</p>
       <p className="temperature-display-row-item--min">
-        {tempmin}
+        {this.props.tempmin}
       </p>
     </div>
   </div>
+  }
 }
-export default Température
+
+export default TemperatureDisplay
