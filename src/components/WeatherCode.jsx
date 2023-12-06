@@ -12,45 +12,44 @@ import heavysnow from '../assets/img/heavy-snow.png';
 import thunderstorm from '../assets/img/thunderstorm.png';
 
 
-    const codesimage = [
+const codesimage = [
     {
-        codeimg:0,
-        image: sunshine
-    },
-    {
-        code: 2,
-        image: partielSun
-    }, 
-    {
-        code: 3,
-        image: clouds
-    },
-    {
-        code: 45,
-        image: fog
-    },
-    {
-        code: 51,
-        image: sunrain
-    },
-    {
-        code: 65,
-        image: heavyrain
-    },
-    {
-        code: 71,
-        image: slightsnow
+        code: 95,
+        image: thunderstorm
     },
     {
         code: 75,
         image: heavysnow
     },
     {
-        code: 95,
-        image: thunderstorm
-    }
+        code: 71,
+        image: slightsnow
+    },
+    {
+        code: 65,
+        image: heavyrain
+    },
+    {
+        code: 51,
+        image: sunrain
+    },
+    {
+        code: 45,
+        image: fog
+    },
+    {
+        code: 3,
+        image: clouds
+    },
+    {
+        code: 2,
+        image: partielSun
+    }, 
+    {
+        code:0,
+        image: sunshine
+    },
 ]
-
 
 
 const WeatherCode = (props) => {
