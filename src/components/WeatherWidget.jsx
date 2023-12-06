@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import TemperatureDisplay from '../../src/components/TemperatureDisplay';
 import WeatherCode from '../../src/components/WeatherCode';
 import ForecastItem from '../../src/components/ForecastItem';
 
-const WeatherWidget = () => {
+const WeatherWidget = props => {
+    const {
+        nomCity,
+        latitude,
+        longitude
+    } = props
     const [apimeteo, setApiMeteo] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null);
   const [tabActive, setLastActive] = useState('day')
 
   const FetchAPImeteo = () => {
-    const latitude = 46.1592
-    const longitude = -1.171
     const timezone = 'Europe/London'
 
  
@@ -48,7 +53,7 @@ const WeatherWidget = () => {
 
     return <div className="weather-container-content">
       <header className="weather-container-header">
-        <p className="location">La Rochelle</p>
+        <p className="location">{nomCity}</p>
         <button 
         className="refresh-button" 
         onClick={FetchAPImeteo}
@@ -56,24 +61,27 @@ const WeatherWidget = () => {
           <img src="https://lpmiaw-react.napkid.dev/img/weather/refresh.png" alt="Refresh" />
         </button>
       </header>
-      <p className="date">10/20/2021</p>
-      <article className="today">
-        
       {apimeteo ? (
             <>
+      <p className="date">{apimeteo.daily.time[0]}</p>
+      <article className="today">
+        
+      
               <WeatherCode code={apimeteo.daily.weathercode[0]} />
               <TemperatureDisplay
                 tempmin={apimeteo.daily.temperature_2m_min[0]}
                 tempmax={apimeteo.daily.temperature_2m_max[0]}
-                tempmoy={Math.round(apimeteo.daily.temperature_2m_min[0] + apimeteo.daily.temperature_2m_max[0]/2)}
+                tempmoy={Math.round(apimeteo.daily.temperature_2m_min[0] + apimeteo.daily.temperature_2m_max[0] /2)}
               />
-            </>
-          ) : (
-            <p>Pas de données.</p>
-          )}
+              
+            
         
         
       </article>
+      </>
+          ) : (
+            <p>Pas de données.</p>
+          )}
       <section>
         <nav className="tabs">
           <button onClick={() => setLastActive('day')} className={tabActive === 'day' ? 'tab tab--active' : 'tab'}>
@@ -111,6 +119,12 @@ const WeatherWidget = () => {
         <p>{lastUpdate && new Date(lastUpdate).toLocaleString()}</p>
       </footer>
     </div>
+}
+
+WeatherWidget.propTypes = {
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
+    nomCity: PropTypes.string.isRequired
 }
 
 export default WeatherWidget
