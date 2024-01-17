@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import TemperatureDisplay from '../../src/components/TemperatureDisplay';
@@ -15,40 +15,36 @@ const WeatherWidget = props => {
   const [lastUpdate, setLastUpdate] = useState(null);
   const [tabActive, setLastActive] = useState('day')
 
-  const FetchAPImeteo = () => {
+
+  const getData = useCallback(() => {
     const timezone = 'Europe/London'
-
- 
     const dailyVars = [
-      'weathercode',
-      'temperature_2m_max',
-      'temperature_2m_min'
-    ]
-    
-    const hourlyVars = [
-      'temperature_2m',
-      'weathercode'
-    ]
-   
-
+        'weathercode',
+        'temperature_2m_max',
+        'temperature_2m_min'
+      ]
+      
+      const hourlyVars = [
+        'temperature_2m',
+        'weathercode'
+      ]
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=${hourlyVars.join(',')}&daily=${dailyVars.join(',')}&timezone=${timezone}`)
     .then(res => res.json())
     .then(data => {
-      setApiMeteo(data);
-      // Mettez à jour le timestamp de la dernière mise à jour
-      console.log(data)
-     setLastUpdate(Date.now());
+      setApiMeteo({
+        data,
+        lastUpdate: Date.now()
+      });
     });
-
-  }
+  },  [longitude, latitude])
 
   useEffect(() => {
-    FetchAPImeteo()
-    const timer = setInterval(FetchAPImeteo, 10000)
+    getData()
+    const timer = setInterval(getData, 10000)
     return () => {
       clearInterval(timer)
     }
-  }, [])
+  }, [getData])
 
 
     return <div className="weather-container-content">
@@ -56,14 +52,14 @@ const WeatherWidget = props => {
         <p className="location">{nomCity}</p>
         <button 
         className="refresh-button" 
-        onClick={FetchAPImeteo}
+        onClick={getData}
         >
           <img src="https://lpmiaw-react.napkid.dev/img/weather/refresh.png" alt="Refresh" />
         </button>
       </header>
       {apimeteo ? (
             <>
-      <p className="date">{apimeteo.daily.time[0]}</p>
+      <p className="date">12/05/2023</p>
       <article className="today">
         
       
