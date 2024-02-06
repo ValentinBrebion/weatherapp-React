@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React,{ useState, useCallback, useEffect } from 'react'
 
 const Search = props => {
     const {
@@ -14,19 +14,18 @@ const handleChange = item => {
     setSearchInput('')
 }
 
-const FetchAPIGeo = () => {
-   
+const FetchAPIGeo = useCallback(() => {
+  fetch(`https://geo.api.gouv.fr/communes?nom=${searchInput}`)
+      .then(res => res.json())
+      .then(data => setApiGeo(data))
+}, [searchInput])
 
-    fetch(`https://geo.api.gouv.fr/communes?nom=${searchInput}`)
-    .then(res => res.json())
-    .then(data => {
-      setApiGeo(data);
-      // Mettez à jour le timestamp de la dernière mise à jour
-      console.log(data)
-
-    });
-
+useEffect(() => {
+  if(searchInput.length >= 3){
+    FetchAPIGeo()
   }
+}, [FetchAPIGeo, searchInput.length])
+
 
     return <div className="searchbar-container">
 
